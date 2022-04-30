@@ -1,0 +1,4 @@
+name: ModuleSystem
+version: 1.0
+author: deroq
+main: de.deroq.modulesystem.ModuleSystemBukkit

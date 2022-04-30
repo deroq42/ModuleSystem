@@ -1,0 +1,5 @@
+name: ModuleTest
+version: "1.0"
+author: deroq
+main: de.deroq.moduletest.ModuleTest
+prefix: ""
