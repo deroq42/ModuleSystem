@@ -242,6 +242,10 @@ public class ModuleManager {
         return modulesDirectory;
     }
 
+    public Class<?> getClazz() {
+        return clazz;
+    }
+
     public ModuleType getModuleType() {
         return moduleType;
     }

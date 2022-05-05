@@ -1,14 +1,13 @@
 package de.deroq.modulesystem;
 
 import de.deroq.modulesystem.managers.ModuleManager;
-import de.deroq.modulesystem.modules.BukkitModule;
 import de.deroq.modulesystem.modules.BungeeModule;
 import de.deroq.modulesystem.utils.ModuleType;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
 
-public class ModuleSystemBungee extends JavaPlugin {
+public class ModuleSystemBungee extends Plugin {
 
     private static ModuleSystemBungee moduleSystemBungee;
     private ModuleManager moduleManager;
