@@ -14,19 +14,18 @@ public class ModuleSystemBukkit extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        makeInstances();
+        moduleSystemBukkit = this;
+        initManagers();
 
-        getLogger().info("ModuleSystem has been enabled.");
+        getLogger().info("ModuleSystemBukkit has been enabled.");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("ModuleSystem has been disabled.");
+        getLogger().info("ModuleSystemBukkit has been disabled.");
     }
 
-    private void makeInstances() {
-        moduleSystemBukkit = this;
-
+    private void initManagers() {
         this.moduleManager = new ModuleManager(new File("plugins/ModuleSystem/modules"), BukkitModule.class, ModuleType.BUKKIT);
         moduleManager.loadModules();
     }

@@ -14,19 +14,18 @@ public class ModuleSystemBungee extends Plugin {
 
     @Override
     public void onEnable() {
-        makeInstances();
+        moduleSystemBungee = this;
+        initManagers();
 
-        getLogger().info("ModuleSystem has been enabled.");
+        getLogger().info("ModuleSystemBungee has been enabled.");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("ModuleSystem has been disabled.");
+        getLogger().info("ModuleSystemBungee has been disabled.");
     }
 
-    private void makeInstances() {
-        moduleSystemBungee = this;
-
+    private void initManagers() {
         this.moduleManager = new ModuleManager(new File("plugins/ModuleSystem/modules"), BungeeModule.class, ModuleType.BUNGEE);
         moduleManager.loadModules();
     }

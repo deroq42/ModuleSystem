@@ -11,11 +11,11 @@ public class ModuleTest extends BukkitModule {
 
     @Override
     public void onLoad() {
-        getPlugin().getLogger().info("Plugin has been enabled.");
+        getPlugin().getLogger().info("ModuleTest has been enabled.");
     }
 
     @Override
     public void onUnload() {
-        getPlugin().getLogger().info("Plugin has been disabled.");
+        getPlugin().getLogger().info("ModuleTest has been disabled.");
     }
 }

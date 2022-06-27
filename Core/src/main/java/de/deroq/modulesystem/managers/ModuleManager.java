@@ -3,6 +3,7 @@ package de.deroq.modulesystem.managers;
 import de.deroq.modulesystem.models.Module;
 import de.deroq.modulesystem.exceptions.ModuleLoadException;
 import de.deroq.modulesystem.models.ModuleDescription;
+import de.deroq.modulesystem.models.misc.ModuleDescriptionBuilder;
 import de.deroq.modulesystem.modules.BukkitModule;
 import de.deroq.modulesystem.modules.BungeeModule;
 import de.deroq.modulesystem.utils.ModuleType;
@@ -11,7 +12,6 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -175,7 +175,16 @@ public class ModuleManager {
             softDepends = (List<String>) properties.get("softDepends");
         }
 
-        return new ModuleDescription(name, author, version, mainClass, prefix, depends, softDepends, file);
+        return new ModuleDescriptionBuilder()
+                .setName(name)
+                .setAuthor(author)
+                .setVersion(version)
+                .setMainClass(mainClass)
+                .setPrefix(prefix)
+                .setDepends(depends)
+                .setSoftDepends(softDepends)
+                .setFile(file)
+                .build();
     }
 
     public Optional<Module> getModule(String name) {
