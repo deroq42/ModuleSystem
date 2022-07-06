@@ -26,24 +26,29 @@ public class ModuleManager {
     private final List<BukkitModule> bukkitModules;
     private final List<BungeeModule> bungeeModules;
     private final File modulesDirectory;
-    private final Class<?> clazz;
+    private final Class<?> aClass;
     private final ModuleType moduleType;
 
-    public ModuleManager(File modulesDirectory, Class<?> clazz, ModuleType moduleType) {
+    public ModuleManager(File modulesDirectory, Class<?> aClass, ModuleType moduleType) {
         this.modules = new ArrayList<>();
         this.bukkitModules = new ArrayList<>();
         this.bungeeModules = new ArrayList<>();
         this.modulesDirectory = modulesDirectory;
-        this.clazz = clazz;
+        this.aClass = aClass;
         this.moduleType = moduleType;
     }
 
+    /**
+     * Loads all modules.
+     */
     public void loadModules() {
+        /* Loop through all files */
         for (File file : modulesDirectory.listFiles()) {
             if (file.isDirectory()) {
                 continue;
             }
 
+            /* If the file is not a jar file, go to next file. */
             if (!file.getName().endsWith(".jar")) {
                 continue;
             }
@@ -71,7 +76,8 @@ public class ModuleManager {
             ModuleDescription moduleDescription = module.getModuleDescription();
 
             try {
-                if (!clazz.isAssignableFrom(module.getClazz())) {
+                /* if the class is not assignable from BukkitModule or BungeeModule */
+                if (!aClass.isAssignableFrom(module.getClazz())) {
                     throw new ModuleLoadException("Error while loading module" + moduleDescription.getName() + ": Main class does not extend Module.");
                 }
 
@@ -98,6 +104,14 @@ public class ModuleManager {
         }
     }
 
+    /**
+     * Initializes all dependencies from the ModuleDescription.
+     *
+     * @param module
+     * @param used
+     * @param order
+     * @throws ModuleLoadException
+     */
     public void initDependencies(Module module, Set<Module> used, Queue<Module> order) throws ModuleLoadException {
         if (used.contains(module)) {
             return;
@@ -123,38 +137,60 @@ public class ModuleManager {
         order.add(module);
     }
 
+    /**
+     * Loads a module by its file.
+     *
+     * @param file The file of the module.
+     * @return a new Module.
+     * @throws IOException
+     * @throws ModuleLoadException
+     * @throws ClassNotFoundException
+     */
     private Module loadModule(File file) throws IOException, ModuleLoadException, ClassNotFoundException {
-        JarFile jarFile = new JarFile(file);
-        List<String> moduleFileNames = Arrays.asList("module.yml", "bukkitmodule.yml", "bungeemodule.yml");
-        Optional<JarEntry> jarEntry = Optional.empty();
+        try(JarFile jarFile = new JarFile(file)) {
+            List<String> moduleFileNames = Arrays.asList("module.yml", "bukkitmodule.yml", "bungeemodule.yml");
+            Optional<JarEntry> jarEntry = Optional.empty();
 
-        for (String moduleFileName : moduleFileNames) {
-            if (jarFile.getJarEntry(moduleFileName) == null) {
-                continue;
+            for (String moduleFileName : moduleFileNames) {
+                /* If jar file does not contain yml with this name, go to next name. */
+                if (jarFile.getJarEntry(moduleFileName) == null) {
+                    continue;
+                }
+
+                jarEntry = Optional.of(jarFile.getJarEntry(moduleFileName));
+                break;
             }
 
-            jarEntry = Optional.of(jarFile.getJarEntry(moduleFileName));
-            break;
+            if (!jarEntry.isPresent()) {
+                throw new ModuleLoadException("Error while loading module " + jarFile.getName().split("\\\\")[3] + ": module.yml can not be found.");
+            }
+
+            InputStream inputStream = jarFile.getInputStream(jarEntry.get());
+            /* Parsing yaml to map. */
+            Map<String, Object> properties = new Yaml().load(inputStream);
+
+            ModuleDescription moduleDescription = parseModuleDescription(properties, file);
+            /* ClassLoader for loading main class of module. */
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()}, aClass.getClassLoader());
+            Class<?> main = classLoader.loadClass(moduleDescription.getMainClass());
+
+            return new Module(main, moduleDescription, moduleType);
         }
-
-        if (!jarEntry.isPresent()) {
-            throw new ModuleLoadException("Error while loading module " + jarFile.getName().split("\\\\")[3] + ": module.yml can not be found.");
-        }
-
-        InputStream inputStream = jarFile.getInputStream(jarEntry.get());
-        Map<String, Object> properties = new Yaml().load(inputStream);
-
-        ModuleDescription moduleDescription = parseModuleDescription(properties, file);
-        URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()}, clazz.getClassLoader());
-        Class<?> main = classLoader.loadClass(moduleDescription.getMainClass());
-
-        return new Module(main, moduleDescription, moduleType);
     }
 
+    /**
+     * Parses the ModuleDescription from a map.
+     *
+     * @param properties The map of the yaml parse.
+     * @param file The file of the module.
+     * @return a new ModuleDescription.
+     * @throws ModuleLoadException
+     */
     private ModuleDescription parseModuleDescription(Map<String, Object> properties, File file) throws ModuleLoadException {
         String[] keys = new String[]{"name", "author", "version", "main", "prefix"};
 
         for (int i = 0; i < keys.length; i++) {
+            /* If one of the keys is not in the yaml, throw exception. */
             if (!properties.containsKey(keys[i])) {
                 throw new ModuleLoadException("Error while loading module " + file.getName() + ": " + keys[i] + " can not be found.");
             }
@@ -192,7 +228,6 @@ public class ModuleManager {
             if (!module.getModuleDescription().getName().equals(name)) {
                 continue;
             }
-
             return Optional.of(module);
         }
 
@@ -204,7 +239,6 @@ public class ModuleManager {
             if (!module.getClazz().equals(clazz)) {
                 continue;
             }
-
             return Optional.of(module);
         }
 
@@ -216,7 +250,6 @@ public class ModuleManager {
             if (!bukkitModule.getModule().getModuleDescription().getName().equals(name)) {
                 continue;
             }
-
             return Optional.of(bukkitModule);
         }
 
@@ -228,7 +261,6 @@ public class ModuleManager {
             if (bungeeModule.getModule().getModuleDescription().getName().equals(name)) {
                 continue;
             }
-
             return Optional.of(bungeeModule);
         }
 
@@ -251,8 +283,8 @@ public class ModuleManager {
         return modulesDirectory;
     }
 
-    public Class<?> getClazz() {
-        return clazz;
+    public Class<?> getaClass() {
+        return aClass;
     }
 
     public ModuleType getModuleType() {
