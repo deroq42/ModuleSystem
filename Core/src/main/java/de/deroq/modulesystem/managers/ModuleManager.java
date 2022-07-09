@@ -3,7 +3,6 @@ package de.deroq.modulesystem.managers;
 import de.deroq.modulesystem.models.Module;
 import de.deroq.modulesystem.exceptions.ModuleLoadException;
 import de.deroq.modulesystem.models.ModuleDescription;
-import de.deroq.modulesystem.models.misc.ModuleDescriptionBuilder;
 import de.deroq.modulesystem.modules.BukkitModule;
 import de.deroq.modulesystem.modules.BungeeModule;
 import de.deroq.modulesystem.utils.ModuleType;
@@ -121,7 +120,7 @@ public class ModuleManager {
         ModuleDescription moduleDescription = module.getModuleDescription();
         List<String> depends = Stream.concat(moduleDescription.getDepends().stream(), moduleDescription.getSoftDepends().stream()).collect(Collectors.toList());
 
-        for(String depend : depends) {
+        for (String depend : depends) {
             if (!getModule(depend).isPresent()) {
                 throw new ModuleLoadException("Error while loading module " + moduleDescription.getName() + ": Dependency " + depend + " can not be found.");
             }
@@ -147,7 +146,7 @@ public class ModuleManager {
      * @throws ClassNotFoundException
      */
     private Module loadModule(File file) throws IOException, ModuleLoadException, ClassNotFoundException {
-        try(JarFile jarFile = new JarFile(file)) {
+        try (JarFile jarFile = new JarFile(file)) {
             List<String> moduleFileNames = Arrays.asList("module.yml", "bukkitmodule.yml", "bungeemodule.yml");
             Optional<JarEntry> jarEntry = Optional.empty();
 
@@ -182,7 +181,7 @@ public class ModuleManager {
      * Parses the ModuleDescription from a map.
      *
      * @param properties The map of the yaml parse.
-     * @param file The file of the module.
+     * @param file       The file of the module.
      * @return a new ModuleDescription.
      * @throws ModuleLoadException
      */
@@ -204,14 +203,14 @@ public class ModuleManager {
         List<String> depends = new ArrayList<>();
         List<String> softDepends = new ArrayList<>();
 
-        if(properties.containsKey("depends")) {
+        if (properties.containsKey("depends")) {
             depends = (List<String>) properties.get("depends");
         }
-        if(properties.containsKey("softDepends")) {
+        if (properties.containsKey("softDepends")) {
             softDepends = (List<String>) properties.get("softDepends");
         }
 
-        return new ModuleDescriptionBuilder()
+        return new ModuleDescription.builder()
                 .setName(name)
                 .setAuthor(author)
                 .setVersion(version)
