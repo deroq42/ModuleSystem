@@ -19,6 +19,11 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
+
 public class ModuleManager {
 
     private final List<Module> modules;

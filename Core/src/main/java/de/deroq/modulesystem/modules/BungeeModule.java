@@ -2,8 +2,14 @@ package de.deroq.modulesystem.modules;
 
 import de.deroq.modulesystem.managers.ModuleManager;
 import de.deroq.modulesystem.models.Module;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
 
 public class BungeeModule {
 

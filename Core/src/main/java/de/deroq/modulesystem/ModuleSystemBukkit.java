@@ -7,6 +7,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
+
 public class ModuleSystemBukkit extends JavaPlugin {
 
     private static ModuleSystemBukkit moduleSystemBukkit;

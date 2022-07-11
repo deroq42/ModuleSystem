@@ -2,6 +2,11 @@ package de.deroq.modulesystem.models;
 
 import de.deroq.modulesystem.utils.ModuleType;
 
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
+
 public class Module {
 
     private final Class<?> clazz;

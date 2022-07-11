@@ -7,6 +7,11 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
 
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
+
 public class ModuleSystemBungee extends Plugin {
 
     private static ModuleSystemBungee moduleSystemBungee;

@@ -5,6 +5,11 @@ import de.deroq.modulesystem.models.Module;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
+
 public class BukkitModule {
 
     private final Module module;

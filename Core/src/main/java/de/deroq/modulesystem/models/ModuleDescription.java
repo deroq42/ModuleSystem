@@ -3,6 +3,11 @@ package de.deroq.modulesystem.models;
 import java.io.File;
 import java.util.List;
 
+/**
+ * @author deroq
+ * @since 01.05.2022
+ */
+
 public class ModuleDescription {
 
     private final String name;
